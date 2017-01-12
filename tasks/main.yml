@@ -1,18 +1,15 @@
 ---
-- name: Include OS-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
-
 - name: Install common apt packages
-  apt: pkg={{ item }} state=latest update_cache=true
-  with_items: elk_common_packages
-  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ elk_common_packages }}"
+  become: yes
 
 - name: Monit conf file
   copy:
     src=monitrc
     dest=/etc/monit/monitrc
     owner=root group=root mode=600
-  sudo: yes
+  become: yes
   notify: Restart monit
 
 - name: Install Java
@@ -20,9 +17,21 @@
 
 - name: ES apt GPG key
   apt_key:
-    url='http://packages.elastic.co/GPG-KEY-elasticsearch'
+    url='https://artifacts.elastic.co/GPG-KEY-elasticsearch'
   when: ansible_os_family == 'Debian'
-  sudo: yes
+  become: yes
+
+- name: Install APT https transport
+  apt: pkg=apt-transport-https state=latest
+  become: yes
+  when: ansible_os_family == 'Debian'
+
+- name: Elastic APT Repository
+  apt_repository:
+    repo="{{ elk_repo }}"
+    update_cache=yes
+  when: ansible_os_family == 'Debian'
+  become: yes
 
 - name: Install Elasticsearch
   include: elasticsearch.yml

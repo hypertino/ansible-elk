@@ -1,37 +1,29 @@
 ---
-- name: Logstash apt repo
-  apt_repository:
-    repo="deb http://packages.elastic.co/logstash/{{ elk_logstash.version }}/{{ ansible_os_family|lower }} stable main"
-    update_cache=yes
-  when: ansible_os_family == 'Debian'
-  sudo: yes
-
 - name: Install logstash apt packages
-  apt: pkg={{ item }} update_cache=yes state=present
+  apt: pkg={{ item }} state=present
   with_items:
    - logstash
-   - logstash-contrib
-  sudo: yes
+  become: yes
   when: ansible_os_family == 'Debian'
   notify: Restart logstash
 
 - name: Logstash conf file
   template:
-    src={{ item.src }}
-    dest=/etc/logstash/conf.d/{{ item.dest }}
+    src="{{ item.src }}"
+    dest="/etc/logstash/conf.d/{{ item.dest }}"
     owner=root group=root mode=644
-  with_items: elk_logstash.configs
-  sudo: yes
+  with_items: "{{ elk_logstash_configs }}"
+  become: yes
   notify: Restart logstash
 
 - name: Logstash pattern files
   template:
-    src={{ item.src }}
-    dest=/opt/logstash/patterns/{{ item.dest }}
+    src="{{ item.src }}"
+    dest="/opt/logstash/patterns/{{ item.dest }}"
     owner=root group=root mode=644
-  with_items: elk_logstash.patterns
-  sudo: yes
-  when: elk_logstash.patterns is defined
+  with_items: "{{ elk_logstash_patterns }}"
+  become: yes
+  when: elk_logstash_patterns is defined
   notify: Restart logstash
 
 - name: Make monit to look after Logstash
@@ -39,5 +31,5 @@
     src=logstash.monitrc.conf.j2
     dest=/etc/monit/conf.d/logstash.monitrc.conf
     owner=root group=root mode=644
-  sudo: yes
+  become: yes
   notify: Restart monit

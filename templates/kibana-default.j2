@@ -1,5 +1,5 @@
 server {
-  listen {{ elk_nginx.port }};
+  listen {{ elk_nginx_port }};
   server_name kibana;
   client_max_body_size 50M;
 
@@ -9,7 +9,7 @@ server {
   location / {
 
     # Pass requests to Kibana
-    proxy_pass http://127.0.0.1:{{ elk_kibana.port}}/;
+    proxy_pass http://127.0.0.1:{{ elk_kibana_port}}/;
     proxy_redirect off;
     proxy_buffering off;
 
@@ -25,10 +25,10 @@ server {
     add_header Access-Control-Allow-Credentials true;
 
     satisfy any;
-{% for item in elk_kibana.allowed_addresses %}
+{% for item in elk_kibana_allowed_addresses %}
     allow {{ item }};
 {% endfor %}
-{% if elk_kibana.user is defined and elk_kibana.password is defined %}
+{% if elk_kibana_user is defined and elk_kibana_password is defined %}
     deny all;
     auth_basic "Authentication Required";
     auth_basic_user_file conf.d/.kibana.htpasswd;

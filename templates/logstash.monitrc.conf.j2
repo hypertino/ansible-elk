@@ -2,7 +2,7 @@
 # Monit configuration file for Logstash
 # ------------------------------------------
 
-check process logstash with pidfile {{ elk_logstash.pid_file }}
+check process logstash with pidfile {{ elk_logstash_pidfile }}
   start program = "/etc/init.d/logstash restart" with timeout 60 seconds
   stop program  = "/etc/init.d/logstash stop"
   if cpu > 90% for 15 cycles then alert
