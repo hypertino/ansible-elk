@@ -14,7 +14,7 @@
     creates: /etc/nginx/conf.d/.kibana.htpasswd
   become: yes
   register: http_pass_gen
-  when: elk_kibana_user is defined and elk_kibana_password is defined
+  when: elk_kibana_user is defined and elk_kibana_password is defined and elk_kibana_user != ''
 
 - name: Kibana htpassword file permissions
   file:
