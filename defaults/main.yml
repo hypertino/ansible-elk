@@ -18,6 +18,7 @@ elk_repo: "deb https://artifacts.elastic.co/packages/{{elk_version}}/apt stable 
 elk_elasticsearch_pid_file: /var/run/elasticsearch.pid
 elk_elasticsearch_http_port: 9200
 elk_elasticsearch_settings: ""
+elk_elasticsearch_skip_kernel_settings: false
 
 elk_logstash_pidfile: /var/run/logstash.pid
 elk_logstash_configs:

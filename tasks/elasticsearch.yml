@@ -1,6 +1,8 @@
 ---
 - name: Install ES apt packages
   apt: pkg=elasticsearch state=latest
+  environment:
+    ES_SKIP_SET_KERNEL_PARAMETERS: "{{ 'true' if elk_elasticsearch_skip_kernel_settings else 'false' }}"
   become: yes
   when: ansible_os_family == 'Debian'
   notify: Restart elasticsearch
