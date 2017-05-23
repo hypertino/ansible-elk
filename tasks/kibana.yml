@@ -37,4 +37,5 @@
     dest=/etc/monit/conf.d/kibana.monitrc.conf
     owner=root group=root mode=644
   become: yes
-  notify: Restart monit  
+  notify: Restart monit
+  when: elk_install_monit

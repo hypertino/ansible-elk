@@ -35,8 +35,9 @@ elk_kibana_allowed_addresses:
 elk_nginx_port: 80
 elk_nginx_user: nginx
 
+elk_install_monit: yes
+
 elk_common_packages:
     - python-apt
     - python-pycurl
     - python-pip
-    - monit

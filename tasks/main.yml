@@ -4,6 +4,11 @@
   with_items: "{{ elk_common_packages }}"
   become: yes
 
+- name: Install monit package
+  apt: pkg=monit state=latest
+  become: yes
+  when: elk_install_monit
+
 - name: Monit conf file
   copy:
     src=monitrc
@@ -11,6 +16,7 @@
     owner=root group=root mode=600
   become: yes
   notify: Restart monit
+  when: elk_install_monit
 
 - name: Install Java
   include: java.yml
